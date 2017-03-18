@@ -4,25 +4,18 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Login Successful</title>
+<title>Insert title here</title>
 </head>
 <body>
 
-Welcome <b><%= request.getParameter("user") %></b>. You logged in successfully !!
+<% session.invalidate(); %>
 
-<br/>
-<%
-String name = (String)session.getAttribute("SessionName");
-
-if(name == "" || name ==null){
-	name ="User";
-}
-%>
-<%= "Session Name: "+name %>
+You have been successfully logged out!
+Session Invalidated!
 
 <br/>
 <br/>
-<a href="Logout.jsp">Logout</a>
+<a href="index.jsp">Go To Login Page!</a>
 
 </body>
 </html>

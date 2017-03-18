@@ -8,6 +8,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 import java.sql.*;
 /**
  * Servlet implementation class LoginChecker
@@ -54,7 +56,7 @@ public class LoginChecker extends HttpServlet {
 		} 
 		catch (ClassNotFoundException exc) {
 		    exc.printStackTrace();
-		} 
+		}
 		
 		try {
 			// 1. Get a connection to database
@@ -70,31 +72,47 @@ public class LoginChecker extends HttpServlet {
 			
 			// 3. Execute SQL query
 			myRs = myStmt.executeQuery();
-
+			
 			// 4. Process the result set & redirect accordingly
 			if(myRs.next() == false){
-		    	  request.getRequestDispatcher("/Failed.jsp").forward(request, response);
+				//Creating a session with the session name as 'User'
+				HttpSession session = request.getSession();
+				session.setAttribute("SessionName", "");
+				//redirecting request
+				request.getRequestDispatcher("/Failed.jsp").forward(request, response);
 			}
 			else{
-				request.getRequestDispatcher("/Success.jsp").forward(request, response);
+				//Creating a session with the session name as 'name' of the User from the DB
+				HttpSession session = request.getSession();
+		  		session.setAttribute("SessionName", myRs.getString("name"));
+		  		//redirecting request
+		  		request.getRequestDispatcher("/Success.jsp").forward(request, response);
 			}
 		}
 		catch (Exception exc) {
 			exc.printStackTrace();
 		}
 		finally {
-			if (myRs != null) {
-//				myRs.close();
-			}
-			
-			if (myStmt != null) {
-//				myStmt.close();
-			}
-			
-			if (myConn != null) {
-//				myConn.close();
+			try {
+				close(myConn, myStmt, myRs);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
-		
+	}
+	
+	private static void close(Connection myConn, Statement myStmt, ResultSet myRs) throws SQLException {
+		if (myRs != null) {
+			myRs.close();
+		}
+
+		if (myStmt != null) {
+			myStmt.close();
+		}
+
+		if (myConn != null) {
+			myConn.close();
+		}
 	}
 }

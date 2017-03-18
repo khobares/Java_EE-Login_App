@@ -7,6 +7,22 @@
 <title>Login Failure</title>
 </head>
 <body>
+
 Wrong <b>username</b> and <b>password</b> combination!
+
+<br/>
+<%
+String name = (String)session.getAttribute("SessionName");
+
+if(name == "" || name ==null){
+	name ="User";
+}
+%>
+<%= "Session Name: "+name %>
+
+<br/>
+<br/>
+<a href="index.jsp">Go To Login Page!</a>
+
 </body>
 </html>
